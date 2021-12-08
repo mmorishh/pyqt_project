@@ -1,7 +1,9 @@
 import sqlite3
 import sys
+
+from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QMainWindow, QApplication
-from PyQt5.uic.properties import QtCore
+from PyQt5.uic.properties import QtCore, QtWidgets
 
 from genshin_ui import Ui_MainWindow
 
@@ -44,6 +46,24 @@ class MyWidget(QMainWindow, Ui_MainWindow):
         self.btn_search.clicked.connect(self.search)
 
     def search(self):  #  работает с поиском
+        item = QtWidgets.QListWidgetItem()
+        self.listWidget.addItem(item)
+        item = QtWidgets.QListWidgetItem()
+        self.listWidget.addItem(item)
+        item = QtWidgets.QListWidgetItem()
+        self.listWidget.addItem(item)
+        item = QtWidgets.QListWidgetItem()
+        self.listWidget.addItem(item)
+        item = QtWidgets.QListWidgetItem()
+        self.listWidget.addItem(item)
+        item = QtWidgets.QListWidgetItem()
+        self.listWidget.addItem(item)
+        item = QtWidgets.QListWidgetItem()
+        self.listWidget.addItem(item)
+        item = QtWidgets.QListWidgetItem()
+        self.listWidget.addItem(item)
+        item = QtWidgets.QListWidgetItem()
+        self.listWidget.addItem(item)
         _translate = QtCore.QCoreApplication.translate
         if self.le_search.text() == '':
             pass
@@ -89,6 +109,48 @@ class MyWidget(QMainWindow, Ui_MainWindow):
                                     cur.execute("SELECT weapons FROM characters"
                                                 "WHERE name=self.le_search.text()").fetchall()))
 
+            if self.le_search.text() == 'Diluc':
+                pixmap = QPixmap('diluc.jpg')
+            elif self.le_search.text() == 'Tartaglia':
+                pixmap = QPixmap('tartaglia.jpg')
+            elif self.le_search.text() == 'Keqing':
+                pixmap = QPixmap('keqing.jpg.jpg')
+            elif self.le_search.text() == 'Kazuha':
+                pixmap = QPixmap('kazuha.jpg.jpg')
+            elif self.le_search.text() == 'Kaeya':
+                pixmap = QPixmap('kaeya.jpg.jpg')
+            elif self.le_search.text() == 'Lisa':
+                pixmap = QPixmap('lisa.jpg')
+            elif self.le_search.text() == 'Barbara':
+                pixmap = QPixmap('barbara.jpg.jpg')
+            elif self.le_search.text() == 'Qiqi':
+                pixmap = QPixmap('qiqi.jpg')
+            elif self.le_search.text() == 'Zhongli':
+                pixmap = QPixmap('zhongli.jpg.jpg')
+            elif self.le_search.text() == 'Klee':
+                pixmap = QPixmap('klee.jpg.jpg')
+            elif self.le_search.text() == 'Xiao':
+                pixmap = QPixmap('xiao.jpg')
+            elif self.le_search.text() == 'Razor':
+                pixmap = QPixmap('razor.jpg.jpg')
+            elif self.le_search.text() == 'Albedo':
+                pixmap = QPixmap('albedo.jpg.jpg')
+            elif self.le_search.text() == 'Bennet':
+                pixmap = QPixmap('bennet.jpg.jpg')
+            elif self.le_search.text() == 'Xingqiu':
+                pixmap = QPixmap('xingqiu.jpg.jpg')
+            elif self.le_search.text() == 'Chongyun':
+                pixmap = QPixmap('chongyun.jpg.jpg')
+            elif self.le_search.text() == 'Venti':
+                pixmap = QPixmap('venti.jpg.jpg')
+            elif self.le_search.text() == 'Ningguang':
+                pixmap = QPixmap('ningguang.jpg.jpg')
+
+            self.label_8.setPixmap(pixmap)
+            self.label_8.resize(200, 200)
+            self.label_8.move(100, 100)
+
+
 
 
         else:
@@ -100,31 +162,96 @@ class MyWidget(QMainWindow, Ui_MainWindow):
     def filter(self):
         cur = self.con.cursor()
         res_element = cur.execute(f"""
-                      SELECT DISTINCT characters.id
+                      SELECT characters.id
                       FROM characters, elements JOIN characters_elements
                       ON characters.id = characters_elements.id_elements
                       WHERE id_elements = {self.cb_elements.currentIndex() + 1}
                       """).fetchall()
-        for j in self.list_btn:
-            for i in res_element:
-                if 'btn' + str(i) == str(j):
+        for i in res_element:
+            for j in self.list_btn:
+                if 'self.btn' + str(i) == str(j):
                     j.show()
                 else:
                     j.hide()
+
         res_weapon = cur.execute(f"""
-                      SELECT DISTINCT characters.id
+                      SELECT characters.id
                       FROM characters, weap_role JOIN weap_role_characters
                       ON characters.id = weap_role_characters.id_weap_role
                       WHERE id_weap_role = {self.cb_weapons.currentIndex() + 1}
                       """).fetchall()
         for j in self.list_btn:
             for i in res_weapon:
-                if 'btn' + str(i) == str(j):
+                if 'self.btn' + str(i) == str(j):
                     j.show()
                 else:
                     j.hide()
     def btn(self):
-        pass
+        button = QApplication.instance().sender()
+        btn_name = button.text()
+        _translate = QtCore.QCoreApplication.translate
+        cur = self.con.cursor()
+        __sortingEnabled = self.listWidjet.isSortingEnabled()
+        self.listWidget.setSortingEnabled(False)
+        self.listWidget.setSortingEnabled(__sortingEnabled)
+        item = self.Widget.item(0)
+        item.setText(_translate("MainWindow", 'Name:', btn_name))
+        item = self.Widget.item(2)
+        item.setText(_translate("MainWindow", 'Element:',
+                                cur.execute("SELECT element FROM characters"
+                                            "WHERE name=btn_name").fetchall()))
+        item = self.Widget.item(4)
+        item.setText(_translate("MainWindow", 'Weapon:',
+                                cur.execute("SELECT weap_role FROM characters"
+                                            "WHERE name=btn_name").fetchall()))
+        item = self.Widget.item(6)
+        item.setText(_translate("MainWindow", 'Artifacts:',
+                                cur.execute("SELECT artifacts FROM characters"
+                                            "WHERE name=btn_name").fetchall()))
+        item = self.Widget.item(8)
+        item.setText(_translate("MainWindow", 'Weapons:',
+                                cur.execute("SELECT weapons FROM characters"
+                                            "WHERE name=btn_nam)").fetchall()))
+        if btn_name == 'Diluc':
+            pixmap = QPixmap('diluc.jpg')
+        elif btn_name == 'Tartaglia':
+            pixmap = QPixmap('tartaglia.jpg')
+        elif btn_name == 'Keqing':
+            pixmap = QPixmap('keqing.jpg.jpg')
+        elif btn_name == 'Kazuha':
+            pixmap = QPixmap('kazuha.jpg.jpg')
+        elif btn_name == 'Kaeya':
+            pixmap = QPixmap('kaeya.jpg.jpg')
+        elif btn_name == 'Lisa':
+            pixmap = QPixmap('lisa.jpg')
+        elif btn_name == 'Barbara':
+            pixmap = QPixmap('barbara.jpg.jpg')
+        elif btn_name == 'Qiqi':
+            pixmap = QPixmap('qiqi.jpg')
+        elif btn_name == 'Zhongli':
+            pixmap = QPixmap('zhongli.jpg.jpg')
+        elif btn_name == 'Klee':
+            pixmap = QPixmap('klee.jpg.jpg')
+        elif btn_name == 'Xiao':
+            pixmap = QPixmap('xiao.jpg')
+        elif btn_name == 'Razor':
+            pixmap = QPixmap('razor.jpg.jpg')
+        elif btn_name == 'Albedo':
+            pixmap = QPixmap('albedo.jpg.jpg')
+        elif btn_name == 'Bennet':
+            pixmap = QPixmap('bennet.jpg.jpg')
+        elif btn_name == 'Xingqiu':
+            pixmap = QPixmap('xingqiu.jpg.jpg')
+        elif btn_name == 'Chongyun':
+            pixmap = QPixmap('chongyun.jpg.jpg')
+        elif btn_name == 'Venti':
+            pixmap = QPixmap('venti.jpg.jpg')
+        elif btn_name == 'Ningguang':
+            pixmap = QPixmap('ningguang.jpg.jpg')
+
+        self.label_8.setPixmap(pixmap)
+        self.label_8.resize(200, 200)
+        self.label_8.move(100, 100)
 
 
 def main():
