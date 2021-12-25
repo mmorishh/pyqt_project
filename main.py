@@ -25,42 +25,47 @@ class MyWidget(QMainWindow, Ui_MainWindow):
 
         self.btn_download.clicked.connect(self.download)
 
-        self.name = 'Diluc'
-
-        res = cur.execute("SELECT artifacts FROM characters WHERE name LIKE ?", (self.name,)).fetchall()
-        for i in res:
-            for j in i:
-                res1 = j.split(' & ')
-                for i in res1:
-                    self.listWidget.addItem('Weapon: ' + i)
+        self.name = ''
 
     def search(self):  #  работает с поиском
         pass
 
+    def clicked(self, item):
+        self.name = item.text()
 
     def filter(self):
+        list_elements = []
+        list_weapon = []
         self.listWidget_2.clear()
         cur = self.con.cursor()
         res_element = cur.execute(f"""
                       SELECT characters.name
                       FROM characters, elements JOIN characters_elements
-                      ON characters.id = characters_elements.id_elements
+                      ON characters.id = characters_elements.id_characters AND
+                         elements.id = characters_elements.id_elements
                       WHERE id_elements = {self.cb_elements.currentIndex() + 1}
                       """).fetchall()
         for i in res_element:
             for j in i:
-                for _ in j:
-                    self.listWidget_2.addItem(_)
-
+                list_elements.append(j)
 
         res_weapon = cur.execute(f"""
-                      SELECT characters.id
+                      SELECT characters.name
                       FROM characters, weap_role JOIN weap_role_characters
-                      ON characters.id = weap_role_characters.id_weap_role
+                      ON characters.id = weap_role_characters.id_characters AND
+                         weap_role.id = weap_role_characters.id_weap_role
                       WHERE id_weap_role = {self.cb_weapons.currentIndex() + 1}
                       """).fetchall()
+        for i in res_weapon:
+            for j in i:
+                list_weapon.append(j)
+        for i in list_elements:
+            if i in list_weapon:
+                self.listWidget_2.addItem(i)
 
-    def btn(self):
+        self.listWidget_2.itemClicked.connect(self.clicked)
+
+    def show(self):
         self.con = sqlite3.connect("genshin_db.sqlite")
         cur = self.con.cursor()
 
